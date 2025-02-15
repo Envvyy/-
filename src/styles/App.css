@@ -1,0 +1,162 @@
+/* App.css */
+
+/* Общие сбросы, шрифты, box-sizing */
+* {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    color: #333;
+  }
+  
+  /* Шапка */
+  .header {
+    display: flex;
+    flex-direction: column;
+    background-color: #f5f5f5;
+    padding: 0.5rem 1rem;
+  }
+  .header__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .header__logo {
+    font-weight: bold;
+    font-size: 1.2rem;
+  }
+  .header__contacts {
+    text-align: right;
+  }
+  .header__contacts a {
+    display: block;
+    font-weight: bold;
+    color: #000;
+    text-decoration: none;
+  }
+  
+  /* Навигация */
+  .nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.5rem;
+  }
+  .nav__list {
+    list-style: none;
+    display: flex;
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+  }
+  .nav__list li a {
+    text-decoration: none;
+    color: #333;
+  }
+  .nav__year {
+    font-weight: bold;
+  }
+  
+  /* Hero */
+  .hero {
+    position: relative;
+    background: url('https://via.placeholder.com/1200x500') center/cover no-repeat;
+    min-height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  .hero__content {
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 2rem;
+    max-width: 600px;
+  }
+  .hero__title {
+    font-size: 2rem;
+    margin: 0 0 1rem 0;
+    text-transform: uppercase;
+  }
+  .hero__subtitle {
+    font-size: 1.2rem;
+    margin: 0;
+  }
+  
+  /* Footer */
+  .footer {
+    background-color: #333;
+    color: #fff;
+    padding: 1rem;
+    margin-top: 2rem;
+  }
+  .footer__info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .footer__brand {
+    font-weight: bold;
+  }
+  .footer__contacts a {
+    color: #fff;
+    text-decoration: none;
+  }
+  .footer__contacts a:hover {
+    text-decoration: underline;
+  }
+  .footer__copyright {
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    opacity: 0.8;
+  }
+  
+  .slider-container {
+    width: 100%;
+    max-width: 1200px; 
+    margin: 0 auto;
+    position: relative;
+  }
+  
+  .slider-container img {
+    width: 100%;
+    height: auto; 
+    display: block;
+  }
+  
+  .slick-dots {
+    bottom: -30px; 
+  }
+  
+  .slick-dots li button:before {
+    font-size: 12px;
+    color: #000;
+  }
+  
+  .slick-dots li.slick-active button:before {
+    color: #00ff40; 
+  }
+  html, body, #root {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+  }
+  
+  .app-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  main {
+    flex: 1;
+  }
+
+  .footer {
+    background-color: #333;
+    color: #fff;
+    padding: 1rem;
+    text-align: center;
+  }
+  
