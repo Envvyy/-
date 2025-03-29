@@ -21,6 +21,7 @@ import third from './assets/images/3.webp'
 import fourth from './assets/images/4.webp'
 import fifth from './assets/images/5.webp'
 import Testimonial from './components/Testimonial'
+import ConsultationForm from './components/ConsultationForm'
 
 const iconCardsProps = [
   { title: "КОРОТКИЕ СРОКИ", image: first, text: "Вообше быстро делаем как папа карло" },
@@ -69,6 +70,7 @@ function App() {
           </div>
         </div>
         <Testimonial />
+        <ConsultationForm />
       </main>
       <Footer />
     </div>

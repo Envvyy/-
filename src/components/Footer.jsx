@@ -1,19 +1,27 @@
-const Footer = () => {
+function Footer() {
   return (
     <footer className="footer">
-      <div className="footer__info">
-        <div className="footer__brand">
-          ДИ-МЕБЕЛЬ
+      <nav className="footer-nav">
+        <a href="#home">ГЛАВНАЯ</a>
+        <a href="#vacancy">ВАКАНСИИ</a>
+        <a href="#promo">АКЦИИ</a>
+        <a href="#team">КОМАНДА</a>
+        <a href="#reviews">ОТЗЫВЫ</a>
+      </nav>
+      
+      <div className="footer-center">
+        <div className="footer-logo">
+          Д<span className="footer-separator">|</span>И
         </div>
-        <div className="footer__contacts">
-          <a href="mailto:dimebel@mail.ru">dimebel@mail.ru</a>
-        </div>
+        <div className="footer-email">di-mebelufa@mail.ru</div>
       </div>
-      <div className="footer__copyright">
-        © 2025. Все права защищены.
+
+      <div className="footer-bottom">
+        <p>*Все права защищены</p>
       </div>
     </footer>
-  )
+  );
 }
 
-export default Footer
+export default Footer;
+

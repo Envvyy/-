@@ -5,6 +5,10 @@ export default function Testimonial() {
     <div className="testimonial-container">
       <div className="testimonial-image">
         <img src={profileImage} alt="Хаматуллин Ренат Талгатович" />
+        <div className="author-info">
+          <p className="author-name">Хаматуллин Ренат Талгатович</p>
+          <p className="author-title">Основатель компании <span className="company-name">«Ди-мебель»</span></p>
+          </div>  
       </div>
 
       <div className="testimonial-text">
@@ -28,12 +32,7 @@ export default function Testimonial() {
         </p>
 
         <p className="quote quote-right">»</p>
-
-        <div className="author-info">
-          <p className="author-name">Хаматуллин Ренат Талгатович</p>
-          <p className="author-title">Основатель компании <span className="company-name">«Ди-мебель»</span></p>
         </div>
       </div>
-    </div>
   );
 }
