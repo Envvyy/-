@@ -1,59 +1,66 @@
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
+import axios from 'axios';
 
-// Локальные изображения
-import sofaImage from '../assets/images/КУХНИ.jpg';
-import chairImage from '../assets/images/ПРИХОЖИЕ.jpg';
-import tableImage from '../assets/images/ШКАФЫ.jpg';
-
-// Цвета
+// Стили
 const COLORS = {
   background: '#282e3a',
   text: '#dddddd',
   accent: '#c0b78e',
+  darkAccent: '#a89d6e'
 };
 
-// Тестовые данные для демонстрации
-const TEST_PRODUCTS = [
-  {
-    id: 1,
-    name: 'Диван Madrid',
-    description: 'Удобный и стильный диван для вашей гостиной.',
-    price: 12000,
-    image: sofaImage,
-  },
-  {
-    id: 2,
-    name: 'Стул Oslo',
-    description: 'Элегантный стул из прочного дерева.',
-    price: 3500,
-    image: chairImage,
-  },
-  {
-    id: 3,
-    name: 'Стол London',
-    description: 'Прочный обеденный стол для всей семьи.',
-    price: 7800,
-    image: tableImage,
-  },
-];
-
-// Контейнер страницы каталога
 const CatalogContainer = styled.div`
   background: ${COLORS.background};
   min-height: 100vh;
   padding: 2rem;
 `;
 
-// Сетка карточек
+const CatalogHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+`;
+
+const CatalogTitle = styled.h1`
+  color: ${COLORS.accent};
+  margin: 0;
+  font-size: 2rem;
+`;
+
+const CategoryButtons = styled.div`
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+`;
+
+const CategoryButton = styled.button`
+  background: ${props => props.$active ? COLORS.accent : COLORS.background};
+  color: ${props => props.$active ? COLORS.background : COLORS.text};
+  padding: 0.5rem 1.25rem;
+  border: 1px solid ${COLORS.accent};
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: ${props => props.$active ? '600' : '400'};
+  
+  &:hover {
+    background: ${props => props.$active ? COLORS.accent : COLORS.darkAccent};
+    color: ${COLORS.background};
+  }
+`;
+
 const Grid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 1.5rem;
 `;
 
-// Одиночная карточка товара
 const Card = styled(motion.div)`
   background: ${COLORS.background};
   border-radius: 8px;
@@ -68,6 +75,7 @@ const Image = styled.img`
   width: 100%;
   height: 200px;
   object-fit: cover;
+  background: #383e4a;
 `;
 
 const Content = styled.div`
@@ -95,49 +103,145 @@ const Price = styled.span`
   color: ${COLORS.accent};
 `;
 
-// Компонент карточки каталога
-const CatalogCard = ({ product }) => (
-  <Card
-    whileHover={{ scale: 1.03 }}
-    transition={{ duration: 0.3 }}
-  >
-    <Image src={product.image} alt={product.name} />
-    <Content>
-      <Title>{product.name}</Title>
-      <Description>{product.description}</Description>
-      <Price>{product.price} ₽</Price>
-    </Content>
-  </Card>
-);
+const CatalogCard = ({ product }) => {
+  const firstImage = product.images?.[0];
+  const imageUrl = firstImage?.url || null;
 
-// Страница каталога
+  return (
+    <Card whileHover={{ scale: 1.03 }} transition={{ duration: 0.3 }}>
+      {imageUrl && (
+        <Image 
+          src={imageUrl} 
+          alt={product.name}
+          onError={(e) => {
+            e.target.src = '';
+            e.target.style.display = 'none';
+          }}
+        />
+      )}
+      <Content>
+        <Title>{product.name}</Title>
+        <Description>{product.characteristic}</Description>
+        <Price>{product.price} ₽</Price>
+        {product.images?.length > 1 && (
+          <small style={{ color: COLORS.accent, marginTop: '0.5rem' }}>
+            +{product.images.length - 1} фото
+          </small>
+        )}
+      </Content>
+    </Card>
+  );
+};
+
 export default function CatalogPage() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const currentCategory = searchParams.get('category') || null;
 
   useEffect(() => {
-    // Заменяем вызов API тестовыми данными
-    setTimeout(() => {
-      setProducts(TEST_PRODUCTS);
-      setLoading(false);
-    }, 500);
-  }, []);
+    const fetchProducts = async () => {
+      try {
+        const params = {};
+        if (currentCategory) {
+          params.category = currentCategory;
+        }
+        
+        const response = await axios.get('http://localhost:8000/furniture/get', { params });
+        setProducts(response.data);
+      } catch (err) {
+        console.error('Ошибка:', err);
+        setError('Не удалось загрузить данные. Пожалуйста, попробуйте позже.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, [currentCategory]);
+
+  const handleCategoryChange = (category) => {
+    if (category) {
+      setSearchParams({ category });
+    } else {
+      setSearchParams({});
+    }
+  };
 
   if (loading) {
     return (
       <CatalogContainer>
-        <p style={{ color: COLORS.text }}>Загрузка каталога...</p>
+        <CatalogHeader>
+          <CatalogTitle>Каталог мебели</CatalogTitle>
+        </CatalogHeader>
+        <p style={{ color: COLORS.text }}>Загрузка...</p>
+      </CatalogContainer>
+    );
+  }
+
+  if (error) {
+    return (
+      <CatalogContainer>
+        <CatalogHeader>
+          <CatalogTitle>Каталог мебели</CatalogTitle>
+        </CatalogHeader>
+        <p style={{ color: '#ff6b6b' }}>{error}</p>
       </CatalogContainer>
     );
   }
 
   return (
     <CatalogContainer>
-      <Grid>
-        {products.map((product) => (
-          <CatalogCard key={product.id} product={product} />
-        ))}
-      </Grid>
+      <CatalogHeader>
+        <CatalogTitle>Каталог мебели</CatalogTitle>
+        <CategoryButtons>
+          <CategoryButton 
+            onClick={() => handleCategoryChange(null)}
+            $active={!currentCategory}
+          >
+            Все товары
+          </CategoryButton>
+          <CategoryButton 
+            onClick={() => handleCategoryChange('КАТАЛОГ')}
+            $active={currentCategory === 'КАТАЛОГ'}
+          >
+            КАТАЛОГ
+          </CategoryButton>
+          <CategoryButton 
+            onClick={() => handleCategoryChange('КУХНИ')}
+            $active={currentCategory === 'КУХНИ'}
+          >
+            Кухни
+          </CategoryButton>
+          <CategoryButton 
+            onClick={() => handleCategoryChange('ПРИХОЖИЕ')}
+            $active={currentCategory === 'ПРИХОЖИЕ'}
+          >
+            Прихожие
+          </CategoryButton>
+          <CategoryButton 
+            onClick={() => handleCategoryChange('ШКАФЫ')}
+            $active={currentCategory === 'ШКАФЫ'}
+          >
+            Шкафы
+          </CategoryButton>
+        </CategoryButtons>
+      </CatalogHeader>
+
+      {products.length > 0 ? (
+        <Grid>
+          {products.map((product) => (
+            <CatalogCard key={product.id} product={product} />
+          ))}
+        </Grid>
+      ) : (
+        <p style={{ color: COLORS.text }}>
+          {currentCategory 
+            ? `В категории "${currentCategory}" товаров не найдено`
+            : 'В каталоге нет товаров'}
+        </p>
+      )}
     </CatalogContainer>
   );
 }
